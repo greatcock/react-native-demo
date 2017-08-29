@@ -12,6 +12,16 @@ class MessageList extends Component {
     //     title: '聊天页' +'/n',
     //
     // };
+    constructor(){
+        super()
+        this.a=0
+    }
+    // componentWillUnmount (){
+    //删除组件之前需要判断是否有未读消息，如果有 确认是否删除
+    //
+    //     alert("123");
+    //
+    // }
     render() {
         //  let key = this.props.key
         // console.log(key)

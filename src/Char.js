@@ -17,7 +17,8 @@ const Chat = TabNavigator({
         tabBarLabel: '消息',}
     }}, {
     tabBarPosition: 'bottom', //导航条位置
-    lazy: true, // 是否懒加载
+    lazy: true,// 是否懒加载
+    swipeEnabled:false,    // 禁止滑动返回
     tabBarOptions:{
         indicatorStyle: {
             height: 0  // 如TabBar下面显示有一条线，可以设高度为0后隐藏

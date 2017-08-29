@@ -6,8 +6,10 @@ import {
     StyleSheet,
     Image,
     StatusBar,
-    FlatList
+    FlatList,
+    InteractionManager
 } from 'react-native';
+import {Input} from "./input"
 
 
 class Message extends Component {
@@ -17,9 +19,11 @@ class Message extends Component {
             message: '',
             dialogue_id : null,
             content: '',
+            hrName:'',
             from_user_id:''
         }
     }
+
     static navigationOptions = ({navigation}) =>({
             headerTitle:
                 <View style={{alignSelf:'center', alignItems:'center',marginRight:40}}>
@@ -33,8 +37,12 @@ class Message extends Component {
         }
     )
 
-    componentDidMount(){
-       const {params} = this.props.navigation.state
+
+
+
+    componentDidMount (){
+        console.log('componentWillMount')
+        const {params} = this.props.navigation.state
         let dialogue_id = params.dialogue_id
         let hrName = params.hrName
         this.setState({
@@ -58,9 +66,18 @@ class Message extends Component {
                 .catch((err) =>{
                     console.log(err)
                 })
+
+        //跳转到聊天记录最下面
+        InteractionManager.runAfterInteractions(() => {
+            //使用InteractionManager可以让一些耗时的任务在交互操作或者动画完成之后进行执行
+            this.FlatList.scrollToEnd({animated: true})
+
+        });
     }
 
     render() {
+        // const data = this.state.message
+        // let data = this.message
         const {params} = this.props.navigation.state
         return (
             <View style={{flex:1}}>
@@ -72,14 +89,16 @@ class Message extends Component {
                 </View>
                 <View style={{alignSelf:'center',marginTop:15}}><Text style={{fontSize:11}}>{`您正在与Boss ${params.hrName}直接沟通如下职位`}</Text></View>
                 <View style={styles.message}>
-                    {/*<View style={styles.my}>*/}
-
                     <FlatList
-                        data = {this.state.message}
+                        ref={ FlatList => this.FlatList = FlatList}
+                        // onScroll = { ()=> console.log(this.ref)}
+                        data = { this.state.message }
+                        // extraData={this.state}
                         keyExtractor = { (item, index) => {
-
-                            return index
+                           // console.log(item)
+                            return item.msg_id
                         } }
+
                         renderItem = {({ item, index }) => {
                             let content = item.content
                             let from_user_id = item.from_user_id
@@ -87,32 +106,21 @@ class Message extends Component {
                             let source = user==='my' ? require('../img/combinedShape.png') :{uri:params.avatar}
                             return (
                                 <View style={styles[user]} key = {index}>
-                            <Image source={source} style={styles.userIcon}/>
-                            <Text style={[styles.containerText,{backgroundColor: '#3af0b1',alignSelf:'center'}]}
-                                selectable={true}
-                                numberOfLines={4}
-                            > {content}</Text>
-                            {/*<Image source={require('../img/ticked.png.png')} style={styles.userIcon}/>*/}
-                            </View>
+                                <Image source={source} style={styles.userIcon}/>
+                                {/*<Image source={require('../img/iconEat.png')} style={styles.userIcon}/>*/}
+                                <Text style={[styles.containerText,{backgroundColor: '#3af0b1',alignSelf:'center'}]}
+                                    selectable={true}
+                                    numberOfLines={4}
+                                > {content}</Text>
+                            {/*<Image source={require('../img/ticked.png')} style={styles.userIcon}/>*/}
+                                </View>
                             )
 
                         }}
                     />
 
-
-
-
-
-
-
-                    {/*<View style={styles.other}>*/}
-                        {/*<Image source={{uri:params.avatar}} style={styles.userIcon}/>*/}
-                        {/*<Text style={[styles.containerText,{backgroundColor: '#3af0b1',alignSelf:'center'}]}*/}
-                              {/*selectable={true}*/}
-                              {/*numberOfLines={4}*/}
-                        {/*>dadassadadasdasdadasdasdada啊大苏打实打实的啊啊大大大大撒</Text>*/}
-                    {/*</View>*/}
                 </View>
+                <Input />
             </View>
         );
     }
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
         flex:1
     },
     message:{
-        flex:1,
+         flex:1,
         marginVertical:10,
     },
     my:{
