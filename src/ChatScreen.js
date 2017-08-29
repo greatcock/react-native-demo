@@ -94,7 +94,7 @@ class ChatScreen extends Component {
                                         text: 'delete',
                                         backgroundColor:'red',
                                          onPress :()=> {
-                                             this.deleteMsg(index)
+                                             this.deleteMsg(index)      // aaaa
                                          },
                                 }]}
                                               //卡死
